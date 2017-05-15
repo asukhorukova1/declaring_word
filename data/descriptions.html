@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf=8">
+      <!--   <meta http-equiv="refresh" content="120" /> -->
+		  <link rel="stylesheet" type="text/css" href="css/styles.css">
+<title>UltraClub:projectmap</title>
+    </head>
+    <body>
+	        <style>
+		@import url('https://fonts.googleapis.com/css?family=Aclonica|Acme|Adamina|Aldrich|Alegreya+Sans+SC|Amaranth|Amiko|Anton|Averia+Serif+Libre|Baloo+Bhaina|Bangers|Bree+Serif|Carter+One|Changa|Contrail+One|Convergence|Diplomata+SC|Doppio+One|Fascinate+Inline|Francois+One|Fredoka+One|Fugaz+One|Gentium+Book+Basic|Graduate|Istok+Web|Jockey+One|Kelly+Slab|Luckiest+Guy|Marmelad|Merriweather+Sans|Monda|Orbitron|Patua+One|Quantico|Racing+Sans+One|Ranga|Roboto+Mono|Roboto+Slab|Rubik+Mono+One|Ruslan+Display|Russo+One|Sansita|Unica+One|VT323|Volkhov');
+		</style>
+		<div id="name">
+		<p class="adress">Boekhorststraat, 35</p>
+			<p class="storename">ZUSIES</p>
+			in collaboration with:<br>
+			<p class="student">Theresa, Rebecca, Toni</p>
+		</div>
+		<div id="description">lallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalallalallalallalllallalallalalla.</div>
+
+		
+
+
+
+
+
+
+
+
+	
+
+
+    <script src="js/jquery-2.0.0.min.js"></script>
+    <script src="js/split.js"></script>
+
+
+        <script type="text/javascript">
+        $("body").click(function(){
+        	changeeverything();
+        	console.log("change babe");
+        });
+
+		        function changeeverything(){
+		        // 			var red = Math.floor((Math.random()*256)+0);
+						    // var blue = Math.floor((Math.random()*256)+0);
+						    // var green = Math.floor((Math.random()*156)+0);
+						    // var coloredDiv =document.getElementById("b");
+						    // var coloredDiv2 =document.getElementById("d");
+						    // var coloredDiv3 =document.getElementById("c");
+						    // // coloredDiv.style.backgroundColor = 'rgb('+green+','+red+','+blue+')';
+						    // // coloredDiv2.style.backgroundColor = 'rgb('+green+','+red+','+blue+')';
+						    // // coloredDiv3.style.backgroundColor = 'rgb('+blue+','+green+','+red+')';
+						    // $(".st0").css("fill",'rgb('+blue+','+green+','+red+')');
+						    // $("#menucontainer").css("background-color",'rgb('+blue+','+green+','+red+')');
+						    // $("#Layer_1").css("background-color",'rgb('+green+','+red+','+blue+')');
+						    // var o = Math.round(((parseInt(red) * 299) + (parseInt(blue) * 587) + (parseInt(green) * 114)) /1000);
+						    // if(o > 125) {
+						    //     $('.showme').css('color', 'black');
+						    //     $('.st0').css('stroke', 'black');
+						    //     $('.mapmenu').css('border-color', 'black');
+
+						    // }else{ 
+						    //     $('.showme').css('color', '#ffe6e6');
+						    //     $('.st0').css('stroke', '#ffe6e6');
+						    //     $('.mapmenu').css('border-color', '#ffe6e6');
+						    // }
+							var fontType = [ "Arial", "Verdana", "Helvetica", "Georgia",'Rubik Mono One','Roboto Slab','Bree Serif','Merriweather Sans','Anton','Francois One','Orbitron','Patua One','Acme','Sansita','VT323','Russo One','Istok Web','Fredoka One','Gentium Book Basic','Amiko','Bangers','Amaranth','Volkhov','Adamina','Luckiest Guy','Convergence','Alegreya Sans SC','Aldrich','Fugaz One','Carter One','Ruslan Display','Jockey One','Contrail One','Doppio One','Marmelad','Quantico', 'Aclonica','Graduate','Racing Sans One','Fascinate Inline','Kelly Slab','Averia Serif Libre','Roboto Mono'];
+							var num;
+							// var changefont = document.getElementsByClassName("showme");
+							num=Math.floor(Math.random()*fontType.length);
+
+							// $(changefont).style.fontFamily =fontType[num];
+							$("#name", "#description").css("font-family",""+fontType[num]+"");
+
+
+				        }
+   
+
+				
+
+
+
+
+
+				function init() {
+					changeeverything();
+
+
+
+
+
+
+
+				// 		function addids(){
+				// 				$(".st0").each(function(index,item){
+				// 				$("#showme"+index).hide();
+
+
+				// 		$(this).click(function(){
+				// 			console.log(index);
+				// 			var eachhouse = "<id="+index+">";
+
+
+				// 			$(this).attr(eachhouse);
+							
+				// 		});
+
+				// 	});
+				// }
+
+					// addids();
+				}
+				window.onload=init;
+
+        </script>
+    </body>
+</html>
