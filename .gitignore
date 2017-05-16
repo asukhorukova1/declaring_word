@@ -1,0 +1,3 @@
+data/no/*.json
+data/yes/*.json
+.DS_Store
