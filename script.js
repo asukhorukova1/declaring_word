@@ -164,8 +164,11 @@ for(var i = 0; i < 20; i++) {
 function getSavedVideos() {
   // console.log(searchInput);
   var request = "http://the-man-called-jakob.com/dev/declaring_word/getJson.php";
-  httpGetAsync(request,savedVideosCallback);
-
+  // httpGetAsync(request,savedVideosCallback);
+  $.post(request,
+                function(output) {
+                    savedVideosCallback(output);
+            });
 }
 
 
