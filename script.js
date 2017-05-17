@@ -38,6 +38,7 @@ function commentsCallback(response) {
     // });
     videoComments[videoId] = response;
     videoComments[videoId].currentComment = 0;
+    videoComments[videoId].videoTitle = $(parentVideo).text();
     var firstComment = response.items[videoComments[videoId].currentComment].snippet.topLevelComment.snippet.textDisplay;
     $('.yes').last().html(firstComment);
     // $('.yes').last().append('<div id="comment' + index + '" class="comment">'+item.snippet.topLevelComment.snippet.textDisplay+'</div>');
@@ -171,15 +172,16 @@ function getSavedVideos() {
 // GETTING VIDEOS
 function savedVideosCallback(response) {
   console.log(["savedVideosCallback",response]);
-  // response.forEach(function(item,index) {
-  //   if(item.videoId && item.videoId !== 'undefined') {
-  //     $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video"><br><br><br><br>'+item.snippet.title+'</div>');
-  //     filterByComments(item.id.videoId,'#text'+index);
-  //   }else{
-  //     $('#text'+index).remove();
-  //   }
-  // });
-  // showComments();
+  response[0].forEach(function(item,index) {
+    console.log(item);
+    if(item.data.videoId && item.data.videoId !== 'undefined') {
+      $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.data.videoId + '" class="video"><br><br><br><br>'+item.data.videoTitle+'</div>');
+      // filterByComments(item.videoId,'#text'+index);
+    }else{
+      $('#text'+index).remove();
+    }
+  });
+  showComments();
 }
 
 function getVideos(searchInput) {
@@ -253,7 +255,7 @@ function saveData(yesno,data) {
        data: { no: JSON.stringify(json) },
        type: 'post',
        success: function(output) {
-        alert(output);
+        // alert(output);
       }
     });
       console.log('send no to php');
@@ -294,26 +296,23 @@ function saveData(yesno,data) {
       $(this).append('<button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
       $('.buttonno').click(function(){
         console.log('CLICKED NO');
-        var yesnotbuttons = $(".yes").last().clone()    
+        var pamphletText = $(".yes").last().clone()    
         .children() 
         .remove()   
         .end()      
         .text();
-        console.log(yesnotbuttons);
 
 
         var videoId = $(this).parent().parent().attr("data-ytid");
         $('.yes').last().html(getNextComment(videoId)+' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
 
-
-        yesnotbuttons.videoId = videoId;
-        // yesnotbuttons.videoTitle = 
+        var videoTitle = videoComments[videoId].videoTitle;
         var data = {
-          yesnotbuttons
+          pamphletText,
+          videoId,
+          videoTitle
         };
         saveData('no',data);
-        console.log(['saved', data]);
-
 
       // $("#yes4").addClass("leftout");
     });
@@ -327,7 +326,7 @@ function saveData(yesno,data) {
 
         console.log('CLICKED YES');
 
-        var yesnotbuttons = $(".yes").last().clone()    
+        var pamphletText = $(".yes").last().clone()    
         .children() 
         .remove()   
         .end()      
@@ -338,7 +337,12 @@ function saveData(yesno,data) {
 
         var videoId = $(this).parent().parent().attr("data-ytid");
         $('.yes').last().html(getNextComment(videoId)+'<button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
-
+        var videoTitle = videoComments[videoId].videoTitle;
+        var data = {
+          pamphletText,
+          videoId,
+          videoTitle
+        };
         // $(".yes").last().html(yesnotbuttons+'this should be the second comment but of course it doesnt work, i love my life<button class="buttonno">Leave this out</button> <button class="buttonyes">keep this</button>');
         
 
@@ -348,24 +352,7 @@ function saveData(yesno,data) {
         //     yesnotbuttons =  "lalalla";
         // });
 
-
-
-        var data = {
-          yesnotbuttons
-        };
-        saveData('yes',data);
-        console.log(['saved', data]);
-
-
-
-
-
-
-
-
-
-
-        
+        saveData('yes',data);       
 
     });
 
@@ -402,9 +389,27 @@ function init() {
     };
   });
   $(".saved").click(function(){
-      // getSavedVideos();
-        console.log("videoComments");
-        console.log(videoComments);
+    $('.text').remove();
+    for (var i=0; i < 20; i++){
+      $(".navigation").append("<div id='text"+i+"' class='text'></div>");
+            $('.text').each(function(index){
+      //       $(this).animate({
+      //   margin: 25,
+
+      // },50);
+      $(this).css("position","relative");
+      $(this).css("margin","2%");
+          });
+      $(".navigation").css("height","auto");
+      $(".text").each(function(){
+        var row = $(this);
+        setTimeout(function(){
+          row.addClass('border');
+          row.css('color:white');
+        }, 250*i);
+      });
+    };
+      getSavedVideos();
   });
 };
 
