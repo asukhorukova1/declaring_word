@@ -163,7 +163,7 @@ for(var i = 0; i < 20; i++) {
 
 function getSavedVideos() {
   // console.log(searchInput);
-  var request = "getJson.php";
+  var request = "http://officeofhard.work/dev/declaring_word/getJson.php";
   httpGetAsync(request,savedVideosCallback);
 
 }
@@ -242,7 +242,7 @@ function saveData(yesno,data) {
      }
      */
      if (yesno == 'yes') {
-      $.ajax({ url: 'json.php',
+      $.ajax({ url: 'http://officeofhard.work/dev/declaring_word/json.php',
        data: { yes: JSON.stringify(json) },
        type: 'post',
        success: function(output) {
