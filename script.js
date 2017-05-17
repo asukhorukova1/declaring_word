@@ -160,8 +160,27 @@ for(var i = 0; i < 20; i++) {
   }
 }
 
+function getSavedVideos() {
+  // console.log(searchInput);
+  var request = "getJson.php";
+  httpGetAsync(request,savedVideosCallback);
+
+}
 
 
+// GETTING VIDEOS
+function savedVideosCallback(response) {
+  console.log(["savedVideosCallback",response]);
+  // response.forEach(function(item,index) {
+  //   if(item.videoId && item.videoId !== 'undefined') {
+  //     $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video"><br><br><br><br>'+item.snippet.title+'</div>');
+  //     filterByComments(item.id.videoId,'#text'+index);
+  //   }else{
+  //     $('#text'+index).remove();
+  //   }
+  // });
+  // showComments();
+}
 
 function getVideos(searchInput) {
   // console.log(searchInput);
@@ -286,6 +305,11 @@ function saveData(yesno,data) {
         var videoId = $(this).parent().parent().attr("data-ytid");
         $('.yes').last().html(getNextComment(videoId)+' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
 
+        console.log("videoComments[videoId]");
+        console.log(videoComments[videoId]);
+
+        yesnotbuttons.videoId = videoId;
+        // yesnotbuttons.videoTitle = 
         var data = {
           yesnotbuttons
         };
@@ -356,7 +380,7 @@ function saveData(yesno,data) {
 function init() {
   createSearchbar();
   showComments();
-  $(".clickme").click(function(){
+  $(".clickme :not(.saved)").click(function(){
     $('.text').remove();
     for (var i=0; i < 20; i++){
       $(".navigation").append("<div id='text"+i+"' class='text'></div>");
@@ -377,6 +401,9 @@ function init() {
         }, 250*i);
       });
     };
+  });
+  $(".saved").click(function(){
+      getSavedVideos();
   });
 };
 
