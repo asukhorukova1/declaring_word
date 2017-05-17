@@ -70,7 +70,7 @@ function filterByComments(videoId, divId) {
 
 // GETTING VIDEOS
 function videosCallback(response) {
-  response.items.forEach(function(item,index) {
+  response.items.each(function(item,index) {
     if(item.id.videoId && item.id.videoId !== 'undefined') {
       $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video"><br><br><br><br>'+item.snippet.title+'</div>');
       filterByComments(item.id.videoId,'#text'+index);
@@ -175,7 +175,7 @@ function getSavedVideos() {
 // GETTING VIDEOS
 function savedVideosCallback(response) {
   console.log(["savedVideosCallback",response]);
-  response[0].forEach(function(item,index) {
+  response[0].each(function(item,index) {
     console.log(item);
     if(item.data.videoId && item.data.videoId !== 'undefined') {
       $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.data.videoId + '" class="video"><br><br><br><br>'+item.data.videoTitle+'</div>');
