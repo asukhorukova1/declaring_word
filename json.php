@@ -1,4 +1,5 @@
 <?php
+ header('Access-Control-Allow-Origin: *', false);
   // go with terminal in folder and do:
   // php -S localhost:8080
   // 
