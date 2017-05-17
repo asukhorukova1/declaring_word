@@ -177,7 +177,7 @@ function savedVideosCallback(response) {
   console.log(["savedVideosCallback",response]);
   for( var index = 0; index < response[0].length; index++) {
     var item = response[0][index];
-    if(item.data.videoId && item.data.videoId !== 'undefined') {
+    if($('#video' + index).length == 0) {
       $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.data.videoId + '" class="video"><br><br><br><br>'+item.data.videoTitle+'</div>');
       // filterByComments(item.videoId,'#text'+index);
     }else{
