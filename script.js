@@ -305,8 +305,6 @@ function saveData(yesno,data) {
         var videoId = $(this).parent().parent().attr("data-ytid");
         $('.yes').last().html(getNextComment(videoId)+' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
 
-        console.log("videoComments[videoId]");
-        console.log(videoComments[videoId]);
 
         yesnotbuttons.videoId = videoId;
         // yesnotbuttons.videoTitle = 
@@ -380,7 +378,8 @@ function saveData(yesno,data) {
 function init() {
   createSearchbar();
   showComments();
-  $(".clickme :not(.saved)").click(function(){
+  $(".clickme").click(function(){
+    console.log("clickme clicked");
     $('.text').remove();
     for (var i=0; i < 20; i++){
       $(".navigation").append("<div id='text"+i+"' class='text'></div>");
@@ -403,7 +402,9 @@ function init() {
     };
   });
   $(".saved").click(function(){
-      getSavedVideos();
+      // getSavedVideos();
+        console.log("videoComments");
+        console.log(videoComments);
   });
 };
 
