@@ -70,7 +70,7 @@ function filterByComments(videoId, divId) {
 
 // GETTING VIDEOS
 function videosCallback(response) {
-  response.items.each(function(item,index) {
+  response.items.forEach(function(item,index) {
     if(item.id.videoId && item.id.videoId !== 'undefined') {
       $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video"><br><br><br><br>'+item.snippet.title+'</div>');
       filterByComments(item.id.videoId,'#text'+index);
