@@ -167,7 +167,7 @@ function getSavedVideos() {
   // httpGetAsync(request,savedVideosCallback);
   $.post(request,
                 function(output) {
-                    savedVideosCallback(output);
+                    savedVideosCallback(JSON.parse(output));
             });
 }
 
@@ -175,15 +175,15 @@ function getSavedVideos() {
 // GETTING VIDEOS
 function savedVideosCallback(response) {
   console.log(["savedVideosCallback",response]);
-  response[0].each(function(item,index) {
-    console.log(item);
+  for( var index = 0; index < response[0].length; index++) {
+    var item = response[0][index];
     if(item.data.videoId && item.data.videoId !== 'undefined') {
       $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.data.videoId + '" class="video"><br><br><br><br>'+item.data.videoTitle+'</div>');
       // filterByComments(item.videoId,'#text'+index);
     }else{
       $('#text'+index).remove();
     }
-  });
+  }
   showComments();
 }
 
