@@ -4,6 +4,41 @@ var videoComments = {};
 Number.prototype.map = function (in_min, in_max, out_min, out_max) {
   return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+var keys = {37: 1, 38: 1, 39: 1, 40: 1};
+
+function preventDefault(e) {
+  e = e || window.event;
+  if (e.preventDefault)
+      e.preventDefault();
+  e.returnValue = false;  
+}
+
+function preventDefaultForScrollKeys(e) {
+    if (keys[e.keyCode]) {
+        preventDefault(e);
+        return false;
+    }
+}
+
+function disableScroll() {
+  if (window.addEventListener) // older FF
+      window.addEventListener('DOMMouseScroll', preventDefault, false);
+  window.onwheel = preventDefault; // modern standard
+  window.onmousewheel = document.onmousewheel = preventDefault; // older browsers, IE
+  window.ontouchmove  = preventDefault; // mobile
+  document.onkeydown  = preventDefaultForScrollKeys;
+}
+
+function enableScroll() {
+    if (window.removeEventListener)
+        window.removeEventListener('DOMMouseScroll', preventDefault, false);
+    window.onmousewheel = document.onmousewheel = null; 
+    window.onwheel = null; 
+    window.ontouchmove = null;  
+    document.onkeydown = null;  
+}
+
+
 
 function httpGetAsync(theUrl, callback)
 {
@@ -146,7 +181,7 @@ for(var i = 0; i < 20; i++) {
             var row = $(this);
             setTimeout(function(){
               row.addClass('border');
-            }, (400/yesAmount)*g);
+            }, (700/yesAmount)*g);
           });
 
         });
@@ -306,10 +341,10 @@ function saveData(yesno,data) {
       left:leftpos - ((commentwidthGoal-commentwidth)*0.5),//w/2 - ((commentwidthGoal*0.5) + leftpos),
       top:toppos - (commentheightGoal-commentheight)*0.5//h/2 - ((commentheightGoal*0.5) + toppos)
     }, 1600 );
-    $('html,body').animate({ scrollTop: 0 }, 1000);
+    // $('html,body').animate({ scrollTop: 0 }, 1000);
         // return false; 
       }else{
-        $("body").css("position","fixed");
+        disableScroll();
         console.log("body is fixed now");
         $(this).stop();
         // $(this).finish();
