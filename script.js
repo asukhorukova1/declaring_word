@@ -1,5 +1,10 @@
 var pamphletData = new Array();
 var videoComments = {};
+
+Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+  return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 function httpGetAsync(theUrl, callback)
 {
   var xmlHttp = new XMLHttpRequest();
@@ -36,18 +41,32 @@ function commentsCallback(response) {
     // response.items.forEach(function(item,index) {
     //   $(parentVideo).append('<div id="'+$(parentVideo).attr('data-ytid')+'comment' + index + '" data-ytcom="' + item.snippet.topLevelComment.snippet.textDisplay +  '" class="comment">'+item.snippet.topLevelComment.snippet.textDisplay+'</div>');
     // });
-    videoComments[videoId] = response;
+
+    videoComments[videoId] = {};
+    videoComments[videoId].items = [];
+    response.items.forEach(function(item, index) {
+      var comment = {};
+      comment.videoId = videoId;
+      comment.pamphletText = item.snippet.topLevelComment.snippet.textDisplay;
+      videoComments[videoId].items.push(comment);
+    });
+
     videoComments[videoId].currentComment = 0;
     videoComments[videoId].videoTitle = $(parentVideo).text();
-    var firstComment = response.items[videoComments[videoId].currentComment].snippet.topLevelComment.snippet.textDisplay;
-    $('.yes').last().html(firstComment);
     // $('.yes').last().append('<div id="comment' + index + '" class="comment">'+item.snippet.topLevelComment.snippet.textDisplay+'</div>');
   
+    var firstComment = videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
+    $('.yes').last().html(firstComment);
   }
 }
+// GETTING LOCAL COMMENTS
+
 function getNextComment(videoId){
     videoComments[videoId].currentComment++;
-    var nextComment = videoComments[videoId].items[videoComments[videoId].currentComment].snippet.topLevelComment.snippet.textDisplay;
+    if(videoComments[videoId].currentComment > videoComments[videoId].items.length-1) {
+      videoComments[videoId].currentComment = videoComments[videoId].items.length-1;
+    }
+    var nextComment = videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
     return nextComment;
 }
 
@@ -78,57 +97,11 @@ function videosCallback(response) {
       $('#text'+index).remove();
     }
   });
-  showComments();
+  showComments(false);
 
 }
 
-function showComments(){
-  // console.log("init show comments");
-  // var displayedvideos = $('.video');
-  // for (var a = 0; a < displayedvideos.length; a++){
-  //   console.log("loop"+a);
-
-  // };
-  //  $(displayedvideos).each(function(){
-  //   $(this).hover(function(){
-  //     getComments($(this).attr("data-ytid"));
-  //   });
-  //   });
-
-  //for hover - no click 
-
-//   for(var i = 0; i < 20; i++) {
-//     $("#text"+i).hover(function(){
-//       if($('body').find('.bigcomment').length == 0){
-//         var videoheight= $(this).find("div").height();
-//         getComments($(this).find('.video').attr("data-ytid"));
-//         $(this).append('<div class="basis" style="z-index:9">');
-//         $('.basis').each(function(){
-//           for (var g = 0;g < 5;g++){
-//             $(this).append('<div id="yes'+g+'" class="yes" style="left:'+g*10+'px; top:'+g*10+'px; z-index:'+(g+10)+'"></div>');
-//             $(this).css('top','-'+(videoheight)+'px');
-//           };
-//           $(".yes").each(function(g){
-//             $(this).click(function(){
-//               $(this).addClass("bigcomment");
-//               $(".bigcomment").css('z-index','3000');
-//               toTinderMode();
-//             });
-//             var row = $(this);
-//             setTimeout(function(){
-//               row.addClass('border');
-//             }, 100*g);
-//           });
-//         });
-//       }
-//     },function(){
-//       $(".basis:not(.nomouse)").remove();
-//     });
-//   }
-// }
-
-
-
+function showComments(local){
 //for click - no hover 
 
 for(var i = 0; i < 20; i++) {
@@ -136,11 +109,32 @@ for(var i = 0; i < 20; i++) {
       $(".basis:not(.nomouse)").remove();
       if($('body').find('.bigcomment').length == 0){
         var videoheight= $(this).find("div").height();
-        getComments($(this).find('.video').attr("data-ytid"));
-        $(this).append('<div class="basis" style="z-index:9" data-ytid="' + $(this).find('.video').attr("data-ytid") + '">');
+        var videoId = $(this).find('.video').attr("data-ytid");
+        if(!local) {
+          getComments(videoId);
+        }
+        var width = $(window).width();
+        var height = $(window).height();
+        $(this).append('<div class="basis" style="z-index:9" data-ytid="' + videoId + '">');
         $('.basis').each(function(){
-          for (var g = 0;g < 5;g++){
-            $(this).append('<div id="yes'+g+'" class="yes" style="left:'+g*10+'px; top:'+g*10+'px; z-index:'+(g+10)+'"></div>');
+          var yesAmount = 50;
+          if(local) {
+            if(yesAmount > videoComments[videoId].items.length) {
+              yesAmount = videoComments[videoId].items.length+1;
+            }
+          }
+
+          var offset = $(this).offset();
+          var left = offset.left;
+          var top = offset.top;
+          var topMargin = parseInt($('.navigation').first().css('margin-top'));
+          var leftCenter = (width*0.5) - ($(this).width()*0.5);
+          var topCenter = ((height*0.5) - ($(this).height()*0.5)) + $(window).scrollTop()+topMargin*1.2;
+
+          for (var g = 0;g < yesAmount; g++){
+            var leftGoal = (g+1).map(0,yesAmount,0,leftCenter-left);
+            var topGoal = (g+1).map(0,yesAmount,0,topCenter-top);
+            $(this).append('<div id="yes'+g+'" class="yes" style="left:'+leftGoal+'px; top:'+topGoal+'px; z-index:'+(g+10)+'"></div>');
             $(this).css('top','-'+(videoheight)+'px');
           };
           $(".yes").each(function(g){
@@ -152,10 +146,14 @@ for(var i = 0; i < 20; i++) {
             var row = $(this);
             setTimeout(function(){
               row.addClass('border');
-            }, 100*g);
+            }, (400/yesAmount)*g);
           });
 
         });
+        if(local) {
+          var firstComment = videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
+          $('.yes').last().html(firstComment);
+        }
       }
     });
   }
@@ -175,16 +173,35 @@ function getSavedVideos() {
 // GETTING VIDEOS
 function savedVideosCallback(response) {
   console.log(["savedVideosCallback",response]);
-  for( var index = 0; index < response[0].length; index++) {
-    var item = response[0][index];
-    if($('#video' + index).length == 0) {
-      $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.data.videoId + '" class="video"><br><br><br><br>'+item.data.videoTitle+'</div>');
+  videoComments = {};
+  var index = 0;
+  for( var i = 0; i < response[0].length; i++) {
+    var item = response[0][i].data;
+// videoComments[videoId].items[videoComments[videoId].currentComment].snippet.topLevelComment.snippet.textDisplay;
+
+    if($('.video' + item.videoId).length == 0) {
+      // if the video does not exist yet
+      // create an empty object for the videoId
+      videoComments[item.videoId] = {};
+      // and create an empty array to keep the items (comments)
+      videoComments[item.videoId].items = [];
+      // put the data from the comment in
+      videoComments[item.videoId].videoId = item.videoId;
+      videoComments[item.videoId].videoTitle = item.videoTitle;
+      // set current comment to 0
+      videoComments[item.videoId].currentComment = 0;
+      // add the current item (comment) to the array
+      videoComments[item.videoId].items.push(item);
+
+      $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.videoId + '" class="video video' + item.videoId+ '"><br><br><br><br>'+item.videoTitle+'</div>');
+      index++;
       // filterByComments(item.videoId,'#text'+index);
-    }else{
-      $('#text'+index).remove();
+    } else {
+      // if the video already exists, only add the the current item (comment) to the array 
+      videoComments[item.videoId].items.push(item);
     }
   }
-  showComments();
+  showComments(true);
 }
 
 function getVideos(searchInput) {
@@ -271,22 +288,24 @@ function saveData(yesno,data) {
  // var move = 1;
 
  $('.yes').each(function(index,item){
+  var w = $(window).width();
+  var h = $(window).height();
   var commentheight=$(this).height();
   var commentwidth=$(this).width();
-  var leftpos = $("#yes0").offset().left;
-  var toppos = $("#yes0").offset().top;
-  var w = window.innerWidth;
-  var h = window.innerHeight;
+  var commentheightGoal=h * 0.8;
+  var commentwidthGoal=h * 0.6;
+  var leftpos = parseInt($('.yes').last().css('left'));
+  var toppos = parseInt($('.yes').last().css('top'));
 
   if ($(this).find(".buttonyes").length == 0){
     $(this).clearQueue()
           .stop()
           .animate({
-      width:commentwidth*2,
-      height:commentheight*1.8,
-      left:w/2 - leftpos - commentwidth,
-      top:h/2 - toppos - ((commentheight*1.8)/2),
-    }, 600 );
+      width:commentwidthGoal,
+      height:commentheightGoal,
+      left:leftpos - ((commentwidthGoal-commentwidth)*0.5),//w/2 - ((commentwidthGoal*0.5) + leftpos),
+      top:toppos - (commentheightGoal-commentheight)*0.5//h/2 - ((commentheightGoal*0.5) + toppos)
+    }, 1600 );
     $('html,body').animate({ scrollTop: 0 }, 1000);
         // return false; 
       }else{
@@ -304,7 +323,6 @@ function saveData(yesno,data) {
         .remove()   
         .end()      
         .text();
-
 
         var videoId = $(this).parent().parent().attr("data-ytid");
         $('.yes').last().html(getNextComment(videoId)+' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
@@ -367,7 +385,7 @@ function saveData(yesno,data) {
 
 function init() {
   createSearchbar();
-  showComments();
+  showComments(false);
   $(".clickme").click(function(){
     console.log("clickme clicked");
     $('.text').remove();
@@ -386,7 +404,8 @@ function init() {
         var row = $(this);
         setTimeout(function(){
           row.addClass('border');
-          row.css('color:white');
+         
+
         }, 250*i);
       });
     };
