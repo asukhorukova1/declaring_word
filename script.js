@@ -142,6 +142,7 @@ function showComments(local){
 for(var i = 0; i < 20; i++) {
     $("#text"+i).click(function(){
       $(".basis:not(.nomouse)").remove();
+      $('savedvid').remove();
       if($('body').find('.bigcomment').length == 0){
         var videoheight= $(this).find("div").height();
         var videoId = $(this).find('.video').attr("data-ytid");
@@ -158,6 +159,13 @@ for(var i = 0; i < 20; i++) {
               yesAmount = videoComments[videoId].items.length+1;
             }
           }
+          // $('.basis savedvid').each(function(){
+          // var yesAmount = 50;
+          // if(local) {
+          //   if(yesAmount > videoComments[videoId].items.length) {
+          //     yesAmount = videoComments[videoId].items.length+1;
+          //   }
+          // }
 
           var offset = $(this).offset();
           var left = offset.left;
@@ -173,9 +181,26 @@ for(var i = 0; i < 20; i++) {
             $(this).css('top','-'+(videoheight)+'px');
           };
           $(".yes").each(function(g){
-            $(this).click(function(){
-              $(this).addClass("bigcomment");
-              $(".bigcomment").css('z-index','3000');
+          var offsetyes = $(this).offset();
+          var leftyes = offset.left;
+          var topyes = offset.top;
+          var topMarginyes = parseInt($('.navigation').first().css('margin-top'));
+          var leftCenteryes = (width*0.5) - ($(this).width()*0.5);
+          var topCenteryes = ((height*0.5) - ($(this).height()*0.5)) + $(window).scrollTop()+topMargin*1.7;
+          $(this).click(function(){  
+          $(this).addClass("bigcomment");
+          resize();
+          $(".bigcomment").css('z-index','3000');
+          $('.buttonclose').remove();
+            // $(this).click(function(){
+            
+
+          $('body').append('<button class="buttonclose" style="z-index:3000">close</button>');
+          $('.buttonclose').css('top',topCenteryes);
+          $('.buttonclose').css('left','10px');
+                        
+                      
+
               toTinderMode();
             });
             var row = $(this);
@@ -228,7 +253,7 @@ function savedVideosCallback(response) {
       // add the current item (comment) to the array
       videoComments[item.videoId].items.push(item);
 
-      $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.videoId + '" class="video video' + item.videoId+ '"><br><br><br><br>'+item.videoTitle+'</div>');
+      $('#text'+index).append('<div id="video' + index + '" data-ytid="' + item.videoId + '" class="video savedvid video' + item.videoId+ '"><br>'+item.videoTitle+'</div>');
       index++;
       // filterByComments(item.videoId,'#text'+index);
     } else {
@@ -319,10 +344,12 @@ function saveData(yesno,data) {
     }
   }
 
+
   function toTinderMode(){
  // var move = 1;
 
  $('.yes').each(function(index,item){
+
   var w = $(window).width();
   var h = $(window).height();
   var commentheight=$(this).height();
@@ -333,6 +360,7 @@ function saveData(yesno,data) {
   var toppos = parseInt($('.yes').last().css('top'));
 
   if ($(this).find(".buttonyes").length == 0){
+    enableScroll();
     $(this).clearQueue()
           .stop()
           .animate({
@@ -349,8 +377,20 @@ function saveData(yesno,data) {
         $(this).stop();
         // $(this).finish();
       };
+
       // $("body").css("position","fixed");
-      $(this).append('<button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
+      if ($('body').find(".savedvid").length == 0){
+        console.log($('.yes').last());
+        $('.buttonyes').remove();
+        $('.buttonno').remove();
+        $(this).last().append('<button class="buttonno" style="z-index:3000">previous</button> <button class="buttonyes" style="z-index:3000">next</button>')
+      }else {
+        $('.buttonyes').remove();
+        $('.buttonno').remove();
+        console.log($('.yes').last());
+        $(this).last().append('<button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
+      }
+
       $('.buttonno').click(function(){
         console.log('CLICKED NO');
         var pamphletText = $(".yes").last().clone()    
@@ -373,6 +413,19 @@ function saveData(yesno,data) {
       // $("#yes4").addClass("leftout");
     });
       $(".yes").last().find(':not(button)').addClass("nomouse");
+       $('.buttonclose').click(function(){
+        console.log("scroll should be enabled now");
+        
+        $('.bigcomment').remove();
+        $('.basis').remove();
+        $('.savedvid').remove();
+        $('.yes').remove();
+        $('.buttonyes').remove();
+        $('.buttonclose').remove();
+        enableScroll();
+        // $('.buttonclose').remove();
+      });
+
 
       $('.buttonyes').click(function(){
         // $(this).parent().css("z-index","30000");
@@ -381,6 +434,7 @@ function saveData(yesno,data) {
         // $(this).find(':not(button)').addClass("nomouse");
 
         console.log('CLICKED YES');
+        // $('.yes').last().remove();
 
         var pamphletText = $(".yes").last().clone()    
         .children() 
@@ -417,8 +471,36 @@ function saveData(yesno,data) {
 
 });
 }
+function resize(){
+$(function() {
+
+    var $quote = $(".bigcomment");
+    
+    var $numWords = $quote.text().split(" ").length;
+    console.log($numWords);
+    
+    if (($numWords >= 1) && ($numWords < 10)) {
+        $quote.css("font-size", "36px");
+    }
+    else if (($numWords >= 10) && ($numWords < 20)) {
+        $quote.css("font-size", "32px");
+    }
+    else if (($numWords >= 20) && ($numWords < 30)) {
+        $quote.css("font-size", "28px");
+    }
+    else if (($numWords >= 30) && ($numWords < 40)) {
+        $quote.css("font-size", "24px");
+    }
+    else {
+        $quote.css("font-size", "17px");
+    }    
+  
+});
+}
 
 function init() {
+  
+
   createSearchbar();
   showComments(false);
   $(".clickme").click(function(){
@@ -447,7 +529,7 @@ function init() {
   });
   $(".saved").click(function(){
     $('.text').remove();
-    for (var i=0; i < 20; i++){
+    for (var i=20; i > 0; i--){
       $(".navigation").append("<div id='text"+i+"' class='text'></div>");
             $('.text').each(function(index){
       //       $(this).animate({
@@ -467,6 +549,7 @@ function init() {
       });
     };
       getSavedVideos();
+    resize();
   });
 };
 

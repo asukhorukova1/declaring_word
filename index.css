@@ -12,19 +12,12 @@ html,body{
 	flex-grow: 0;
 	height:380px;
 	flex-wrap:wrap;
-
-	/*margin:3%;*/
-/*	position: absolute;
-*/	flex-basis: auto;
+	flex-basis: auto;
     justify-content: center;
 	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
 	transition: all 0.2s;
-
-
 }
-/*  .text:hover{
-    transform: scale(1.01);
-  }*/
+
 .border{
   display: inline;
   padding: 10px 10px 10px 10px;
@@ -36,7 +29,7 @@ html,body{
   font-size: 21px;
   overflow-wrap: break-word;
 }
-.basis{
+.basis, .savedvid{
 	height: 100%;
 	width: 100%;
 	position: relative;
@@ -45,13 +38,12 @@ html,body{
   position: absolute;
   height: 100%;
   width: 100%;
-  overflow: scroll;
-  
+  overflow: scroll;  
 }
 .bigcomment{
   /*display: flex;*/
   box-shadow: 0px 0px 1px 5000px rgba(0,0,0,1);
-  font-size: 25px;
+font-size: 2.9vw; 
   z-index: 2999;
   width: 100%;
   height: 100%;
@@ -118,6 +110,7 @@ html,body{
 button{
 	cursor:pointer;
 	pointer-events: all;
+
 }
 #searchquery{
 	-webkit-flex-wrap: wrap;
@@ -166,20 +159,15 @@ button{
 	position:relative;
 	bottom: 0%;
 	width: 100%;
-/*	flex-wrap: wrap;
-*/
 	float: top;
-	
 	justify-content: bottom;
 	display: flex;
 	justify-content: space-between;
-/*	margin-top: auto;
-*/}
+}
 #subthemes{
 	position:relative;
 	float: top;
-/*	height:45px;
-*/	width: 100%;
+    width: 100%;
 
 }
 .theme{
@@ -201,8 +189,7 @@ button{
 
 
 .navigation{
-/*	z-index: 10000;
-*/	flex-grow: 0;
+	flex-grow: 0;
 	margin-top: 40vh;
 	top: 0%;
 	flex-wrap: wrap;
@@ -212,28 +199,12 @@ button{
     -webkit-transition-duration:2s;
 }
 
-.leftout{
-  -webkit-transition: all 0.5s; 
-  -moz-transition: all 0.5s; 
-  -o-transition: all 0.5s; 
-  transition: all 0.5s;
-  position: absolute;
-  right: 250px;
-}
-.kept{
-  -webkit-transition: all 0.5s; 
-  -moz-transition: all 0.5s; 
-  -o-transition: all 0.5s; 
-  transition: all 0.5s;
-  position: absolute;
-  left: 250px;
-}
 
-
-.buttonyes, .buttonno{
+.buttonyes, .buttonno,.buttonclose{
   width: 200px;
   height: auto;
   font-size: 20px;
+  text-transform: uppercase;
 }
 .buttonno{
   position: absolute;
@@ -245,15 +216,12 @@ button{
   bottom: 20px;
   right: 15px;
 }
-.comment{
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: blue;
+
+.buttonclose{
+  position: absolute;
+
 }
-/*.Democracy, .Politics{
-	display: none;
-}*/
+
 .subthemes{
 	position:relative;
 	float: top;
