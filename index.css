@@ -32,6 +32,25 @@ html,body{
 */  height: 100%;
   font-size: 21px;
   overflow-wrap: break-word;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font-weight: bold;
+}
+.description{
+	font-weight: bold;
+	font-size: 32px;
+	overflow-wrap: break-word;
+  display: flex;
+ /* font-family: 'EB Garamond', serif;*/
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  font-weight: bold;
+  padding-left: 150px;
+  padding-right: 150px;
+  transition: all 1s;
 }
 .basis, .savedvid{
 	height: 100%;
@@ -44,16 +63,22 @@ html,body{
   height: 100%;
   width: 100%;
   overflow: hidden;  
+  overflow-wrap: break-word;
+  font-size: 21px;
+  transition: all 0.1s;
+  font-family: 'EB Garamond', serif;
 
 }
 .bigcomment{
   /*display: flex;*/
   box-shadow: 0px 0px 1px 5000px rgba(0,0,0,1);
-  padding: 20px 20px 20px 20px;
+  padding: 20px 40px 20px 40px;
 font-size: 2.9vw; 
   z-index: 2999;
   width: 100%;
   height: 100%;
+  text-align: justify;
+  font-family: 'EB Garamond', serif;
   
   -webkit-transition: box-shadow 3s; 
   -moz-transition: box-shadow 3s; 
@@ -102,14 +127,14 @@ font-size: 2.9vw;
 
 #rightmenucell{
 	float:left;
-	background-color: white;
+	/*background-color: white;*/
 	width:100%;
 	height:150px;
 	display: flex;
 	flex-wrap: wrap;
 	left:0%;
 	top:0%;
-	transition: all 2s;
+	transition: all 1s;
 	justify-content: center;
 	align-content: center;
 
@@ -119,6 +144,7 @@ button{
 	pointer-events: all;
 	text-transform: uppercase;
 	font-weight: bold;
+    border: none;
 
 
 }
@@ -131,16 +157,17 @@ button{
 	align-self: center;
 	margin-top:2vh;
 	margin-left: 0vw;
-	width:40vw;
+	width:30vw;
 	height:35px;
 	font-size:14px;
 	padding-left:10px;
 	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
-	transition: all 2s;
+	transition: all 1s;
 
 }
 
 #buttonscheisser{
+
 	-webkit-flex-wrap: wrap;
 	align-self: center;
 	flex-wrap: wrap;
@@ -149,10 +176,11 @@ button{
 	position:relative;
 	margin-top:2vh;
 	margin-left: 0vw;
-	width:60px;
+	width:70px;
 	height:40px;
 	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
 	transition: all 2s;
+	padding-right: 3px;
 }
 
 
@@ -162,6 +190,7 @@ button{
 	height:3vh;
 	background-color: white;
 	box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
+	transition: all 2s;
 }
 
 #themes{
@@ -200,7 +229,7 @@ button{
 
 .navigation{
 	flex-grow: 0;
-	margin-top: 20vh;
+	margin-top: 40vh;
 	top: 0%;
 	flex-wrap: wrap;
 	display: flex;
@@ -215,6 +244,35 @@ button{
   height: auto;
   font-size: 20px;
 }
+.saved{
+  width: 170px;
+  height: 35px;
+  font-size: 13px;
+  position: relative;
+  left: 7vh;
+  margin-right:50px; 
+  align-self: center;
+  background-color: white;
+	margin-top:2vh;
+		box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
+
+
+}
+.buttonabout{
+	background-color: white;
+
+		box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.2), 0 8px 22px 0 rgba(0, 0, 0, 0.19);
+
+	align-self: center;
+	margin-top:2vh;
+  width: 170px;
+  height: 35px;
+  font-size: 13px;
+  position: relative;
+  right: 7vh;
+  margin-left:50px;
+
+}
 .buttonno{
   position: absolute;
   bottom: 20px;
@@ -228,6 +286,8 @@ button{
 
 .buttonclose{
   position: absolute;
+  background-color: black;
+  color: white;
 
 }
 
@@ -256,4 +316,24 @@ button{
 .showme{
 	display: block;
 }
+/*button:active{
+    background:olive;
+}*/
 
+.allblue{
+	background-color: #f0f1f0;
+}
+.commentauthor{
+	font-size: 15px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: bold;
+}
+.date{
+
+	font-size: 12px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: medium;
+/*	position: relative;
+	float: lef*/
+}
+}

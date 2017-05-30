@@ -1,3 +1,21 @@
+(function(seconds) {
+    var refresh,       
+        intvrefresh = function() {
+            clearInterval(refresh);
+            refresh = setTimeout(function() {
+               location.href = location.href;
+            }, seconds * 1000);
+            
+        };
+
+    $(document).on('keypress click', function() { intvrefresh() });
+    intvrefresh();
+    $('body').scrollTop(0);
+
+}(60));
+
+
+
 var pamphletData = new Array();
 var videoComments = {};
 
@@ -93,6 +111,8 @@ function commentsCallback(response) {
             var comment = {};
             comment.videoId = videoId;
             comment.pamphletText = item.snippet.topLevelComment.snippet.textDisplay;
+            comment.author = item.snippet.topLevelComment.snippet.authorDisplayName;
+            comment.date= item.snippet.topLevelComment.snippet.publishedAt;
             videoComments[videoId].items.push(comment);
         });
 
@@ -100,7 +120,8 @@ function commentsCallback(response) {
         videoComments[videoId].videoTitle = $(parentVideo).text();
         // $('.yes').last().append('<div id="comment' + index + '" class="comment">'+item.snippet.topLevelComment.snippet.textDisplay+'</div>');
 
-        var firstComment = videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
+        var firstComment = "<p class=commentauthor>"+videoComments[videoId].items[videoComments[videoId].currentComment].author+", <span class=date>"+videoComments[videoId].items[videoComments[videoId].currentComment].date.replace("T","  ").replace(".000Z","")+"</span>:</p>"+videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
+
         $('.yes').last().html(firstComment);
     }
 }
@@ -111,12 +132,12 @@ function getNextComment(videoId) {
     if (videoComments[videoId].currentComment > videoComments[videoId].items.length - 1) {
         videoComments[videoId].currentComment = videoComments[videoId].items.length - 1;
     }
-    var nextComment = videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
+    var nextComment = "<p class=commentauthor>"+videoComments[videoId].items[videoComments[videoId].currentComment].author+", <span class=date>"+videoComments[videoId].items[videoComments[videoId].currentComment].date.replace("T","  ").replace(".000Z","")+"</span>:</p>"+videoComments[videoId].items[videoComments[videoId].currentComment].pamphletText;
     return nextComment;
 }
 
 function getComments(id) {
-    var request = "https://www.googleapis.com/youtube/v3/commentThreads?maxResults=100&part=snippet&videoId=" + id + "&key=AIzaSyBZwhGeg3VhbhNYJ6hsfjWy-ihp3RyHRko";
+    var request = "https://www.googleapis.com/youtube/v3/commentThreads?maxResults=100&part=snippet&videoId=" + id + "&key=AIzaSyBZwhGeg3VhbhNYJ6hsfjWy-ihp3RyHRko&authorDisplayName&publishedAt";
     httpGetAsync(request, commentsCallback);
 }
 
@@ -128,7 +149,7 @@ function commentsFilterCallback(response, divId, videoId) {
 }
 
 function filterByComments(videoId, divId) {
-    var request = "https://www.googleapis.com/youtube/v3/commentThreads?maxResults=100&part=snippet&videoId=" + videoId + "&key=AIzaSyBZwhGeg3VhbhNYJ6hsfjWy-ihp3RyHRko";
+    var request = "https://www.googleapis.com/youtube/v3/commentThreads?maxResults=100&part=snippet&videoId=" + videoId + "&key=AIzaSyBZwhGeg3VhbhNYJ6hsfjWy-ihp3RyHRko&authorDisplayName";
     httpGetAsyncWithId(request, commentsFilterCallback, divId, videoId);
 }
 
@@ -136,7 +157,7 @@ function filterByComments(videoId, divId) {
 function videosCallback(response) {
     response.items.forEach(function(item, index) {
         if (item.id.videoId && item.id.videoId !== 'undefined') {
-            $('#text' + index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video"><br><br>' + item.snippet.title + '</div>');
+            $('#text' + index).append('<div id="video' + index + '" data-ytid="' + item.id.videoId + '" class="video">' + item.snippet.title + '</div>');
             filterByComments(item.id.videoId, '#text' + index);
         } else {
             $('#text' + index).remove();
@@ -156,6 +177,7 @@ function showComments(local) {
             $(".basis:not(.nomouse)").remove();
             $('savedvid').remove();
             if ($('body').find('.bigcomment').length == 0) {
+
                 var videoheight = $(this).find("div").height();
                 var videoId = $(this).find('.video').attr("data-ytid");
                 if (!local) {
@@ -192,6 +214,10 @@ function showComments(local) {
                         var topGoal = (g + 1).map(0, yesAmount, 0, topCenter - top);
                         $(this).append('<div id="yes' + g + '" class="yes" style="left:' + leftGoal + 'px; top:' + topGoal + 'px; z-index:' + (g + 10) + '"></div>');
                         $(this).css('top', '-' + (videoheight) + 'px');
+                        if ($("*").hasClass("allblue")){
+                            console.log("now yellow");
+                            $(".border").addClass("allblue");
+                        }
                     };
                     $(".yes").each(function(g) {
                         var offsetyes = $(this).offset();
@@ -201,7 +227,9 @@ function showComments(local) {
                         var leftCenteryes = (width * 0.5) - ($(this).width() * 0.5);
                         var topCenteryes = ((height * 0.5) - ($(this).height() * 0.5)) + $(window).scrollTop() + topMargin * 1.7;
                         $(this).click(function() {
+                          // disableScroll();
                             $(this).addClass("bigcomment");
+
                             resize();
                             $(".bigcomment").css('z-index', '3000');
                             $('.buttonclose').remove();
@@ -210,7 +238,7 @@ function showComments(local) {
 
                             $('body').append('<button class="buttonclose" style="z-index:3000">close</button>');
                             $('.buttonclose').css('top', topCenteryes);
-                            $('.buttonclose').css('left', '10px');
+                            $('.buttonclose').css('left', '30px');
 
 
 
@@ -248,6 +276,7 @@ function savedVideosCallback(response) {
     console.log(["savedVideosCallback", response]);
     videoComments = {};
     var index = 0;
+
     for (var i = 0; i < response[0].length; i++) {
         var item = response[0][i].data;
         // videoComments[videoId].items[videoComments[videoId].currentComment].snippet.topLevelComment.snippet.textDisplay;
@@ -266,7 +295,7 @@ function savedVideosCallback(response) {
             // add the current item (comment) to the array
             videoComments[item.videoId].items.push(item);
 
-            $('#text' + index).append('<div id="video' + index + '" data-ytid="' + item.videoId + '" class="video savedvid video' + item.videoId + '"><br>' + item.videoTitle + '</div>');
+            $('#text' + index).append('<div id="video' + index + '" data-ytid="' + item.videoId + '" class="video savedvid video' + item.videoId + '">' + item.videoTitle + '</div>');
             index++;
             // filterByComments(item.videoId,'#text'+index);
         } else {
@@ -274,7 +303,7 @@ function savedVideosCallback(response) {
             videoComments[item.videoId].items.push(item);
         }
     }
-    showComments(true);
+   showComments(true); 
 }
 
 function getVideos(searchInput) {
@@ -287,7 +316,14 @@ function getVideos(searchInput) {
 function createSearchbar() {
 
     $("#buttonscheisser").click(function() {
+      $('.description').fadeOut("fast");
+                for (var i = 0; i < 6; i++) {
+                setTimeout(function() {
+                 rotate();
+                }, 250*i);
+            };
         getVideos($("#searchquery").val());
+
     });
 
     $('.theme').each(function(index) {
@@ -298,6 +334,7 @@ function createSearchbar() {
         console.log(subThemeContent);
 
         $(this).click(function() {
+          $('.description').fadeOut("fast");
                for (var i = 0; i < 6; i++) {
                 setTimeout(function() {
                  rotate();
@@ -309,14 +346,16 @@ function createSearchbar() {
         });
         $(subThemeContent).each(function() {
             $(this).find('.subtheme').click(function() {
+              $('.description').fadeOut("fast");
                 getVideos(subThemeText + " " + ($(this).text()));
-            })
-        });
-        for (var i = 0; i < 6; i++) {
+                        for (var i = 0; i < 6; i++) {
                 setTimeout(function() {
                  rotate();
                 }, 250*i);
             };
+            })
+        });
+
     });
 }
 
@@ -437,7 +476,6 @@ function toTinderMode() {
                 .text();
 
             var videoId = $(this).parent().parent().attr("data-ytid");
-            $('.yes').last().html(getNextComment(videoId) + ' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
 
             var videoTitle = videoComments[videoId].videoTitle;
             var data = {
@@ -446,19 +484,30 @@ function toTinderMode() {
                 videoTitle
             };
             saveData('no', data);
+                        // if ($('body').find(".savedvid").length == 0) {
+            $('.yes').last().html(getNextComment(videoId) + ' <button class="buttonno" style="z-index:3000">Leave this out</button> <button class="buttonyes" style="z-index:3000">keep this</button>');
+// }else{
+//     $('.yes').last().html(getNextComment(videoId) + '<button class="buttonno" style="z-index:3000">previous</button> <button class="buttonyes" style="z-index:3000">next</button>');
+// }
 
             // $("#yes4").addClass("leftout");
         });
         $(".yes").last().find(':not(button)').addClass("nomouse");
+        $("*:not(button)").addClass("nomouse");
+        $(".theme").addClass("nomouse");
+        $(".subtheme").addClass("nomouse");
+
         $('.buttonclose').click(function() {
             console.log("scroll should be enabled now");
 
+
             $('.bigcomment').remove();
             $('.basis').remove();
-            $('.savedvid').remove();
+            // $('.savedvid').remove();
             $('.yes').remove();
             $('.buttonyes').remove();
             $('.buttonclose').remove();
+            $('*').removeClass("nomouse");
             enableScroll();
 
             // $('.buttonclose').remove();
@@ -521,25 +570,46 @@ function resize() {
 
         if (($numWords >= 1) && ($numWords < 10)) {
             $quote.css("font-size", "36px");
+            $quote.css("line-height", "40px");
         } else if (($numWords >= 10) && ($numWords < 20)) {
             $quote.css("font-size", "32px");
+            $quote.css("line-height", "37px");
         } else if (($numWords >= 20) && ($numWords < 30)) {
             $quote.css("font-size", "28px");
+            $quote.css("line-height", "33px");
         } else if (($numWords >= 30) && ($numWords < 40)) {
             $quote.css("font-size", "24px");
-        } else {
-            $quote.css("font-size", "17px");
+            $quote.css("line-height", "29px");
+        } else if (($numWords >= 40) && ($numWords < 50)) {
+            $quote.css("font-size", "20px");
+            $quote.css("line-height", "24px");
+        } else{
+          $quote.css("font-size", "17px");
+          $quote.css("line-height", "20px");
         }
 
     });
 }
 
 function init() {
+  $("#info").click(function(){
+    $(".text").remove();
+    $('.description').fadeIn("fast");
+    $('#subthemes').hide();
+  })
+    $(".buttonabout").click(function(){
+    $(".text").remove();
+    $('.description').fadeIn("fast");
+    $('#subthemes').hide();
+  })
+    $('body').scrollTop(0);
+
 
   // rotate();
     createSearchbar();
     showComments(false);
     $(".clickme").click(function() {
+      $('.description').fadeOut("fast");
         console.log("clickme clicked");
         $('.text').remove();
 
@@ -565,9 +635,14 @@ function init() {
             });
         };
     });
+    $('button:not(.saved)').click(function(){
+        $('*').removeClass("allblue");
+    })
 
     $(".saved").click(function() {
-        $('.text').remove();
+
+      $('.description').fadeOut("fast");
+      $('.text').remove();
 
         for (var i = 20; i > -1; i--) {
             $(".navigation").append("<div id='text" + i + "' class='text'></div>"), 250*(i);
@@ -589,15 +664,24 @@ function init() {
                 });
             });
         };
+
+
         getSavedVideos();
         resize();
-
-    });
-     for (var i = 0; i < 6; i++) {
+             for (var i = 0; i < 6; i++) {
                 setTimeout(function() {
                  rotate();
                 }, 250*i);
             };
+            $("*:not(.yes)").addClass("allblue");  
+            // $("body").addClass("allblue");  
+            // $("#rightmenucell").addClass("allblue");  
+            // $("#info").addClass("allblue");  
+            // $(".menucell").addClass("allblue");  
+
+
+    });
+
 };
 
 
